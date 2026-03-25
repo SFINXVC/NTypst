@@ -8,6 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 chrono = "0.4.44"
+openssl = { version = "0.10.76", features = ["vendored"] }
 typst = "0.14.2"
 typst-html = "0.14.2"
 typst-kit = "0.14.2"
