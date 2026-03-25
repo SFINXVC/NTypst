@@ -71,12 +71,23 @@ jobs:
           fi
         shell: bash
 
+      - name: Collect generated bindings
+        run: |
+          mkdir -p bindings
+          find native/target -type f -name "NativeMethods.g.cs" -exec cp {} bindings/ \;
+
       - name: Upload native artifact
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.rid }}
           path: native/target/${{ matrix.target }}/release/${{ matrix.lib }}
           if-no-files-found: error
+
+      - name: Upload bindings artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings
+          path: bindings/NativeMethods.g.cs
 
   pack:
     needs: build-native
@@ -91,10 +102,16 @@ jobs:
         with:
           global-json-file: global.json
 
-      - name: Download all native artifacts
+      - name: Download native artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+
+      - name: Download bindings
+        uses: actions/download-artifact@v4
+        with:
+          name: bindings
+          path: src/NTypst.Native/Generated
 
       - name: Place native libraries into runtimes
         run: |
