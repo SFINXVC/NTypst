@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NTypst.Native/NTypst.Native.csproj" />
+    <Project Path="src/NTypst/NTypst.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NTypst.Benchmarks/NTypst.Benchmarks.csproj" />
+    <Project Path="tests/NTypst.Tests/NTypst.Tests.csproj" />
+  </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/NTypst.Examples/NTypst.Examples.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,53 @@
+## .NET / C#
+bin/
+obj/
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
+*.user
+*.suo
+*.cache
+*.log
+project.lock.json
+*.nuget.props
+*.nuget.targets
+
+## .NET Tools
+.dotnet/
+BenchmarkDotNet.Artifacts/
+
+## NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## Rust / Cargo
+native/target/
+
+## Runtime binaries
+runtimes/
+
+## Generated bindings (csbindgen)
+src/NTypst.Native/Generated/
+
+## Example output
+examples/**/output.*
+examples/**/page-*.png
+
+
+## IDE / Editors
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+## JetBrains Rider
+*.DotSettings.user
+
+## Visual Studio
+launchSettings.json

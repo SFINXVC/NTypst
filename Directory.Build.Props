@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <TargetFramework>net10.0</TargetFramework>
+
+    <Authors>SFINXV</Authors>
+    <Company>SFINXV</Company>
+    <Copyright>Copyright © 2026 SFINXV</Copyright>
+    <RepositoryUrl>https://github.com/sfinxvc/ntypst</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+</Project>
