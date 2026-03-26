@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use chrono::{DateTime, Datelike, Timelike, Utc};
 use std::ffi::{CStr, CString, c_char};
 use typst::{
@@ -217,7 +219,7 @@ pub extern "C" fn typst_world_new(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_world_free(world: *mut TypstWorldHandle) {
+pub unsafe extern "C" fn typst_world_free(world: *mut TypstWorldHandle) {
     if !world.is_null() {
         unsafe {
             drop(Box::from_raw(world));
@@ -226,14 +228,14 @@ pub extern "C" fn typst_world_free(world: *mut TypstWorldHandle) {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_world_set_main(world: *mut TypstWorldHandle, path: *const c_char) {
+pub unsafe extern "C" fn typst_world_set_main(world: *mut TypstWorldHandle, path: *const c_char) {
     let world = unsafe { &mut (*world).0 };
     let path = unsafe { CStr::from_ptr(path) }.to_str().unwrap_or("/");
     world.main_source_id = FileId::new(None, VirtualPath::new(path));
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_world_add_font(
+pub unsafe extern "C" fn typst_world_add_font(
     world: *mut TypstWorldHandle,
     data: *const u8,
     len: usize,
@@ -251,7 +253,7 @@ pub extern "C" fn typst_world_add_font(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_world_add_system_fonts(world: *mut TypstWorldHandle) -> i32 {
+pub unsafe extern "C" fn typst_world_add_system_fonts(world: *mut TypstWorldHandle) -> i32 {
     let world = unsafe { &mut (*world).0 };
     let system = typst_kit::fonts::Fonts::searcher()
         .include_system_fonts(true)
@@ -273,24 +275,24 @@ pub extern "C" fn typst_world_add_system_fonts(world: *mut TypstWorldHandle) -> 
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_paged(world: *const TypstWorldHandle) -> *mut TypstCompileResult {
+pub unsafe extern "C" fn typst_compile_paged(world: *const TypstWorldHandle) -> *mut TypstCompileResult {
     let world = unsafe { &(*world).0 };
     compile_inner::<typst::layout::PagedDocument>(world)
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_html(world: *const TypstWorldHandle) -> *mut TypstCompileResult {
+pub unsafe extern "C" fn typst_compile_html(world: *const TypstWorldHandle) -> *mut TypstCompileResult {
     let world = unsafe { &(*world).0 };
     compile_inner::<typst_html::HtmlDocument>(world)
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_is_success(result: *const TypstCompileResult) -> bool {
+pub unsafe extern "C" fn typst_compile_result_is_success(result: *const TypstCompileResult) -> bool {
     unsafe { (*result).0.document.is_some() }
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_take_paged_document(
+pub unsafe extern "C" fn typst_compile_result_take_paged_document(
     result: *mut TypstCompileResult,
 ) -> *mut TypstPagedDocument {
     let inner = unsafe { &mut (*result).0 };
@@ -303,7 +305,7 @@ pub extern "C" fn typst_compile_result_take_paged_document(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_take_html_document(
+pub unsafe extern "C" fn typst_compile_result_take_html_document(
     result: *mut TypstCompileResult,
 ) -> *mut TypstHtmlDocument {
     let inner = unsafe { &mut (*result).0 };
@@ -316,19 +318,19 @@ pub extern "C" fn typst_compile_result_take_html_document(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_warning_count(result: *const TypstCompileResult) -> usize {
+pub unsafe extern "C" fn typst_compile_result_warning_count(result: *const TypstCompileResult) -> usize {
     unsafe { (*result).0.warnings.len() }
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_error_count(result: *const TypstCompileResult) -> usize {
+pub unsafe extern "C" fn typst_compile_result_error_count(result: *const TypstCompileResult) -> usize {
     unsafe { (*result).0.errors.len() }
 }
 
 /// Returns a borrowed pointer to the diagnostic message. Valid until the result is freed.
 /// `kind`: 0 = warning, 1 = error.
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_diagnostic_message(
+pub unsafe extern "C" fn typst_compile_result_diagnostic_message(
     result: *const TypstCompileResult,
     kind: i32,
     index: usize,
@@ -340,7 +342,7 @@ pub extern "C" fn typst_compile_result_diagnostic_message(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_diagnostic_severity(
+pub unsafe extern "C" fn typst_compile_result_diagnostic_severity(
     result: *const TypstCompileResult,
     kind: i32,
     index: usize,
@@ -352,7 +354,7 @@ pub extern "C" fn typst_compile_result_diagnostic_severity(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_diagnostic_hint_count(
+pub unsafe extern "C" fn typst_compile_result_diagnostic_hint_count(
     result: *const TypstCompileResult,
     kind: i32,
     index: usize,
@@ -365,7 +367,7 @@ pub extern "C" fn typst_compile_result_diagnostic_hint_count(
 
 /// Returns a borrowed pointer to a diagnostic hint string. Valid until the result is freed.
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_diagnostic_hint(
+pub unsafe extern "C" fn typst_compile_result_diagnostic_hint(
     result: *const TypstCompileResult,
     kind: i32,
     index: usize,
@@ -379,7 +381,7 @@ pub extern "C" fn typst_compile_result_diagnostic_hint(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_compile_result_free(result: *mut TypstCompileResult) {
+pub unsafe extern "C" fn typst_compile_result_free(result: *mut TypstCompileResult) {
     if !result.is_null() {
         unsafe {
             drop(Box::from_raw(result));
@@ -388,12 +390,12 @@ pub extern "C" fn typst_compile_result_free(result: *mut TypstCompileResult) {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_page_count(doc: *const TypstPagedDocument) -> usize {
+pub unsafe extern "C" fn typst_paged_document_page_count(doc: *const TypstPagedDocument) -> usize {
     unsafe { (*doc).0.pages.len() }
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_free(doc: *mut TypstPagedDocument) {
+pub unsafe extern "C" fn typst_paged_document_free(doc: *mut TypstPagedDocument) {
     if !doc.is_null() {
         unsafe {
             drop(Box::from_raw(doc));
@@ -402,7 +404,7 @@ pub extern "C" fn typst_paged_document_free(doc: *mut TypstPagedDocument) {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_export_pdf(
+pub unsafe extern "C" fn typst_paged_document_export_pdf(
     doc: *const TypstPagedDocument,
 ) -> *mut TypstBuffer {
     let doc = unsafe { &(*doc).0 };
@@ -414,7 +416,7 @@ pub extern "C" fn typst_paged_document_export_pdf(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_export_png(
+pub unsafe extern "C" fn typst_paged_document_export_png(
     doc: *const TypstPagedDocument,
     page_index: usize,
     pixel_per_pt: f32,
@@ -431,7 +433,7 @@ pub extern "C" fn typst_paged_document_export_png(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_export_svg(
+pub unsafe extern "C" fn typst_paged_document_export_svg(
     doc: *const TypstPagedDocument,
 ) -> *mut TypstBuffer {
     let doc = unsafe { &(*doc).0 };
@@ -440,7 +442,7 @@ pub extern "C" fn typst_paged_document_export_svg(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_paged_document_export_svg_page(
+pub unsafe extern "C" fn typst_paged_document_export_svg_page(
     doc: *const TypstPagedDocument,
     page_index: usize,
 ) -> *mut TypstBuffer {
@@ -453,7 +455,7 @@ pub extern "C" fn typst_paged_document_export_svg_page(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_html_document_export(doc: *const TypstHtmlDocument) -> *mut TypstBuffer {
+pub unsafe extern "C" fn typst_html_document_export(doc: *const TypstHtmlDocument) -> *mut TypstBuffer {
     let doc = unsafe { &(*doc).0 };
     match typst_html::html(doc) {
         Ok(html) => Box::into_raw(Box::new(TypstBuffer(html.into_bytes()))),
@@ -462,7 +464,7 @@ pub extern "C" fn typst_html_document_export(doc: *const TypstHtmlDocument) -> *
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_html_document_free(doc: *mut TypstHtmlDocument) {
+pub unsafe extern "C" fn typst_html_document_free(doc: *mut TypstHtmlDocument) {
     if !doc.is_null() {
         unsafe {
             drop(Box::from_raw(doc));
@@ -471,17 +473,17 @@ pub extern "C" fn typst_html_document_free(doc: *mut TypstHtmlDocument) {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_buffer_data(buf: *const TypstBuffer) -> *const u8 {
+pub unsafe extern "C" fn typst_buffer_data(buf: *const TypstBuffer) -> *const u8 {
     unsafe { (*buf).0.as_ptr() }
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_buffer_len(buf: *const TypstBuffer) -> usize {
+pub unsafe extern "C" fn typst_buffer_len(buf: *const TypstBuffer) -> usize {
     unsafe { (*buf).0.len() }
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn typst_buffer_free(buf: *mut TypstBuffer) {
+pub unsafe extern "C" fn typst_buffer_free(buf: *mut TypstBuffer) {
     if !buf.is_null() {
         unsafe {
             drop(Box::from_raw(buf));
